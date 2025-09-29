@@ -133,6 +133,25 @@ public class MainMenu {
 	    }
 
 	    
+	    private void viewTransaction() throws SQLException {
+	        System.out.print("Entrez l'ID de la transaction : ");
+	        String id = scanner.nextLine();
+
+	        Transaction tx = transactionService.getTransactionById(id);
+	        if (tx != null) {
+	            System.out.println("=== TRANSACTION ===");
+	            System.out.println("ID : " + tx.getId());
+	            System.out.println("De : " + tx.getFromAddress());
+	            System.out.println("Vers : " + tx.getToAddress());
+	            System.out.println("Montant : " + tx.getAmount());
+	            System.out.println("Frais : " + tx.getFee());
+	            System.out.println("Status : " + tx.getStatus());
+	            System.out.println("Type : " + tx.getCryptoType());
+	        } else {
+	            System.out.println("❌ Aucune transaction trouvée avec cet ID.");
+	        }
+	    }
+	    
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
