@@ -1,7 +1,7 @@
 package com.wallet.ui;
 
 
-
+import com.wallet.utils.*;
 import com.wallet.domain.*;
 import com.wallet.repository.*;
 import com.wallet.service.*;
@@ -75,12 +75,45 @@ public class MainMenu {
 	        String type = scanner.nextLine().toUpperCase();
 
 	        Wallet wallet = walletService.createWallet(type);
-	        System.out.println("✅ Wallet créé avec succès !");
+	        System.out.println("Wallet créé avec succès :) !");
 	        System.out.println("ID : " + wallet.getId());
 	        System.out.println("Adresse : " + wallet.getAddress());
 	        System.out.println("Type : " + wallet.getType());
 	        System.out.println("Solde : " + wallet.getBalance() + " " + wallet.getType());
 	    }
+	    
+	    
+	    
+	    
+	    
+	    private void createTransaction() throws SQLException {
+	        System.out.print("Adresse source : ");
+	        String from = scanner.nextLine();
+	        System.out.print("Adresse destination : ");
+	        String to = scanner.nextLine();
+	        System.out.print("Montant : ");
+	        double amount = scanner.nextDouble();
+	        scanner.nextLine();
+
+	        System.out.print("Fee level (ECONOMIQUE / STANDARD / RAPIDE) : ");
+	        String feeStr = scanner.nextLine().toUpperCase();
+	        FeePriority feeLevel = FeePriority.valueOf(feeStr);
+
+	        System.out.print("Crypto (BITCOIN / ETHEREUM) : ");
+	        String cryptoStr = scanner.nextLine().toUpperCase();
+	        CryptoType cryptoType = CryptoType.valueOf(cryptoStr);
+
+	        Transaction tx = transactionService.createTransaction(from, to, amount, feeLevel, cryptoType);
+
+	        System.out.println(" Transaction créée !!");
+	        System.out.println("ID : " + tx.getId());
+	        System.out.println("De : " + tx.getFromAddress());
+	        System.out.println("Vers : " + tx.getToAddress());
+	        System.out.println("Montant : " + tx.getAmount());
+	        System.out.println("Frais : " + tx.getFee() + " " + tx.getCryptoType());
+	        System.out.println("Status : " + tx.getStatus());
+	    }
+
 	    
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
