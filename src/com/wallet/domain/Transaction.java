@@ -10,35 +10,59 @@ public class Transaction {
     private String fromAddress;
     private String toAddress;
     private double amount;
-    private FeeLevel feeLevel;
+    private FeePriority feeLevel;
     private double fee;
-    private TransactionStatus status;
+    private TxStatus status;
     private LocalDateTime creationDate;
     private CryptoType cryptoType;
 
-    public Transaction(String from, String to, double amount, FeeLevel feeLevel, CryptoType type) {
+    public Transaction(String from, String to, double amount, FeePriority feeLevel, CryptoType type) {
         this.id = UUID.randomUUID().toString();
         this.fromAddress = from;
         this.toAddress = to;
         this.amount = amount;
         this.feeLevel = feeLevel;
         this.cryptoType = type;
-        this.status = TransactionStatus.PENDING;
+        this.status = TxStatus.PENDING;
         this.creationDate = LocalDateTime.now();
         this.fee = calculateFee();
     }
 
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+    private double calculateFee() {
+        double result = 0;
+        switch (cryptoType) {
+            case BITCOIN:
+                int satoshiPerByte = 0;
+                switch (feeLevel) {
+                    case ECONOMIQUE: satoshiPerByte = Constants.BTC_FEE_ECONOMIQUE; break;
+                    case STANDARD:   satoshiPerByte = Constants.BTC_FEE_STANDARD; break;
+                    case RAPIDE:     satoshiPerByte = Constants.BTC_FEE_RAPIDE; break;
+                }
+                result = Constants.BTC_TX_SIZE * satoshiPerByte / 100_000_000.0;
+                break;
 
+            case ETHEREUM:
+                int gasPrice = 0;
+                switch (feeLevel) {
+                    case ECONOMIQUE: gasPrice = Constants.ETH_GAS_ECONOMIQUE; break;
+                    case STANDARD:   gasPrice = Constants.ETH_GAS_STANDARD; break;
+                    case RAPIDE:     gasPrice = Constants.ETH_GAS_RAPIDE; break;
+                }
+                result = Constants.ETH_GAS_LIMIT * gasPrice / 1_000_000_000.0;
+                break;
+        }
+        return result;
+    }
+
+    public String getId() { return id; }
+    public String getFromAddress() { return fromAddress; }
+    public String getToAddress() { return toAddress; }
+    public double getAmount() { return amount; }
+    public FeePriority getFeeLevel() { return feeLevel; }
+    public double getFee() { return fee; }
+    public TxStatus getStatus() { return status; }
+    public void setStatus(TxStatus status) { this.status = status; }
+    public LocalDateTime getCreationDate() { return creationDate; }
+    public CryptoType getCryptoType() { return cryptoType; }
 }
