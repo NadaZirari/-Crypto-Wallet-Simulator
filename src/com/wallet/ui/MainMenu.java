@@ -27,6 +27,46 @@ public class MainMenu {
 
 	        this.scanner = new Scanner(System.in);
 	    }
+	    
+	    
+	    public void start() {
+	        while (true) {
+	            System.out.println("\n=== CRYPTO WALLET SIMULATOR ===");
+	            System.out.println("1. Créer un wallet");
+	            System.out.println("2. Créer une transaction");
+	            System.out.println("3. Voir un wallet par ID");
+	            System.out.println("4. Voir une transaction par ID");
+	            System.out.println("0. Quitter");
+	            System.out.print("Votre choix : ");
+
+	            int choice = scanner.nextInt();
+	            scanner.nextLine(); // consommer le retour chariot
+
+	            try {
+	                switch (choice) {
+	                    case 1:
+	                        createWallet();
+	                        break;
+	                    case 2:
+	                        createTransaction();
+	                        break;
+	                    case 3:
+	                        viewWallet();
+	                        break;
+	                    case 4:
+	                        viewTransaction();
+	                        break;
+	                    case 0:
+	                        System.out.println("Bye 👋");
+	                        return;
+	                    default:
+	                        System.out.println("Choix invalide.");
+	                }
+	            } catch (Exception e) {
+	                System.err.println("Erreur : " + e.getMessage());
+	            }
+	        }
+	    }
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
