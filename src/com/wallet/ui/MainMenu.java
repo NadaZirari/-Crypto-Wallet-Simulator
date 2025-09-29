@@ -68,6 +68,20 @@ public class MainMenu {
 	        }
 	    }
 
+	    
+	    
+	    private void createWallet() throws SQLException {
+	        System.out.print("Type de wallet (BITCOIN / ETHEREUM) : ");
+	        String type = scanner.nextLine().toUpperCase();
+
+	        Wallet wallet = walletService.createWallet(type);
+	        System.out.println("✅ Wallet créé avec succès !");
+	        System.out.println("ID : " + wallet.getId());
+	        System.out.println("Adresse : " + wallet.getAddress());
+	        System.out.println("Type : " + wallet.getType());
+	        System.out.println("Solde : " + wallet.getBalance() + " " + wallet.getType());
+	    }
+	    
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
