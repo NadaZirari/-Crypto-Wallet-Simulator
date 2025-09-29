@@ -1,0 +1,20 @@
+CREATE TABLE wallets (
+    id UUID PRIMARY KEY,
+    type VARCHAR(20) NOT NULL,
+    address VARCHAR(100) UNIQUE NOT NULL,
+    balance NUMERIC(18,8) NOT NULL DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE transactions (
+    id UUID PRIMARY KEY,
+    tx_hash UUID UNIQUE NOT NULL,
+    from_address VARCHAR(100) NOT NULL,
+    to_address VARCHAR(100) NOT NULL,
+    amount NUMERIC(18,8) NOT NULL,
+    fee NUMERIC(18,8) NOT NULL,
+    fee_level VARCHAR(20) NOT NULL,
+    status VARCHAR(20) NOT NULL,
+    crypto_type VARCHAR(20) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
