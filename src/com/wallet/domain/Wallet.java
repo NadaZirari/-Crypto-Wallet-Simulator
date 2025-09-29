@@ -1,27 +1,36 @@
 package com.wallet.domain;
 
-import com.wallet.utils.CryptoType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import com.wallet.utils.CryptoType;
 
 
 public class Wallet {
 	
 	
-	 private String id; // UUID
+	 private String id; 
 	    private CryptoType type;
 	    private String address;
 	    private double balance;
-	   
 	    private List<Transaction> transactions;
 
+	    // Constructeur pour création normale
 	    public Wallet(CryptoType type) {
-	    	
 	        this.id = UUID.randomUUID().toString();
 	        this.type = type;
 	        this.address = generateAddress(type);
 	        this.balance = 0.0;
+	        this.transactions = new ArrayList<>();
+	    }
+
+	    // Constructeur pour récupération depuis la base de données
+	    public Wallet(String id, String address, double balance, CryptoType type) {
+	        this.id = id;
+	        this.address = address;
+	        this.balance = balance;
+	        this.type = type;
 	        this.transactions = new ArrayList<>();
 	    }
 
