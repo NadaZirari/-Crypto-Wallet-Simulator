@@ -115,6 +115,24 @@ public class MainMenu {
 	    }
 
 	    
+	    
+	    private void viewWallet() throws SQLException {
+	        System.out.print("Entrez l'ID du wallet : ");
+	        String id = scanner.nextLine();
+
+	        Wallet wallet = walletService.getWalletById(id);
+	        if (wallet != null) {
+	            System.out.println("=== WALLET ===");
+	            System.out.println("ID : " + wallet.getId());
+	            System.out.println("Adresse : " + wallet.getAddress());
+	            System.out.println("Type : " + wallet.getType());
+	            System.out.println("Solde : " + wallet.getBalance());
+	        } else {
+	            System.out.println(" Aucun wallet trouvé avec cet ID.");
+	        }
+	    }
+
+	    
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
