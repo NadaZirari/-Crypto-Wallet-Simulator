@@ -1,7 +1,7 @@
 package com.wallet.domain;
 
-import com.wallet.model.Transaction;
-import com.wallet.model.FeeLevel;
+import com.wallet.domain.Transaction;
+import com.wallet.utils.FeePriority;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -64,8 +64,8 @@ public class Mempool {
         System.out.println("=== COMPARAISON DES FEES ===");
         System.out.println("Niveau | Fee | Position | Est. Time (min)");
         System.out.println("----------------------------------------");
-        for (FeeLevel level : FeeLevel.values()) {
-            tx.setFeeLevel(level); // temporaire pour calcul
+        for (FeePriority level : FeePriority.values()) {
+            tx.setFeePriority(level); // temporaire pour calcul
             double fee = tx.getFee();
             addTransaction(tx);
             int position = getPosition(tx);

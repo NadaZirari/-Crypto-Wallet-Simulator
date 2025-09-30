@@ -148,7 +148,7 @@ public class MainMenu {
 	            System.out.println("Status : " + tx.getStatus());
 	            System.out.println("Type : " + tx.getCryptoType());
 	        } else {
-	            System.out.println("❌ Aucune transaction trouvée avec cet ID.");
+	            System.out.println("Aucune transaction trouvée avec cet ID.");
 	        }
 	    }
 	    

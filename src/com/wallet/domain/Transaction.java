@@ -63,6 +63,10 @@ public class Transaction {
     public double getFee() { return fee; }
     public TxStatus getStatus() { return status; }
     public void setStatus(TxStatus status) { this.status = status; }
+    public void setFeePriority(FeePriority feeLevel) {
+        this.feeLevel = feeLevel;
+        this.fee = calculateFee();
+    }
     public LocalDateTime getCreationDate() { return creationDate; }
     public CryptoType getCryptoType() { return cryptoType; }
 }
