@@ -76,8 +76,7 @@ public class MainMenu {
 
 	        Wallet wallet = walletService.createWallet(type);
 	        System.out.println("Wallet créé avec succès :) !");
-	        System.out.println("ID : " + wallet.getId());
-	        System.out.println("Adresse : " + wallet.getAddress());
+	    
 	        System.out.println("Type : " + wallet.getType());
 	        System.out.println("Solde : " + wallet.getBalance() + " " + wallet.getType());
 	    }

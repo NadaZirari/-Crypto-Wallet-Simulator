@@ -52,8 +52,16 @@ public class Mempool {
 
         for (Transaction tx : transactions) {
             String label = tx.equals(userTx) ? ">>> " : "";
-            String from = tx.getFromAddress().substring(0, Math.min(10, tx.getFromAddress().length())) + "...";
-            String to = tx.getToAddress().substring(0, Math.min(10, tx.getToAddress().length())) + "...";
+            String from = tx.getFromAddress() != null ? tx.getFromAddress() : "";
+            if (from.length() > 10) {
+                from = from.substring(0, 10) + "...";
+            }
+
+            String to = tx.getToAddress() != null ? tx.getToAddress() : "";
+            if (to.length() > 10) {
+                to = to.substring(0, 10) + "...";
+            }
+
             System.out.printf("│ %s%-10s │ %-13s │ %.6f │\n", label, from, to, tx.getFee());
         }
         System.out.println("└───────────────┴───────────────┴────────┘");
