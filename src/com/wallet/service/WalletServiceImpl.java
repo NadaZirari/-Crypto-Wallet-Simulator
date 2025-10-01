@@ -26,7 +26,7 @@ public class WalletServiceImpl implements WalletService {
 	        // Génération d’une adresse unique
 	        String address = cryptoType == CryptoType.BITCOIN
 	                ? "1" + UUID.randomUUID().toString().replace("-", "").substring(0, 25)
-	                : "0x" + UUID.randomUUID().toString().replace("-", "").substring(0, 40);
+	                : "0x" + UUID.randomUUID().toString().replace("-", "").substring(0, 32);
 
 	        Wallet wallet = new Wallet(UUID.randomUUID().toString(), address, 0.0, cryptoType);
 

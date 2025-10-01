@@ -34,8 +34,13 @@ public class MainMenu {
 	            System.out.println("\n=== CRYPTO WALLET SIMULATOR ===");
 	            System.out.println("1. Créer un wallet");
 	            System.out.println("2. Créer une transaction");
+	            
 	            System.out.println("3. Voir un wallet par ID");
 	            System.out.println("4. Voir une transaction par ID");
+	            System.out.println("5. Voir ma position dans le mempool");
+	            System.out.println("6. Comparer les 3 niveaux de frais");
+	            System.out.println("7. Consulter l'état du mempool");
+
 	            System.out.println("0. Quitter");
 	            System.out.print("Votre choix : ");
 
@@ -55,6 +60,15 @@ public class MainMenu {
 	                        break;
 	                    case 4:
 	                        viewTransaction();
+	                        break;
+	                    case 5:
+	                        viewMempoolPosition();
+	                        break;
+	                    case 6:
+	                        compareFeeLevels();
+	                        break;
+	                    case 7:
+	                        displayMempool();
 	                        break;
 	                    case 0:
 	                        System.out.println("Bye 👋");
@@ -77,6 +91,9 @@ public class MainMenu {
 	        Wallet wallet = walletService.createWallet(type);
 	        System.out.println("Wallet créé avec succès :) !");
 	    
+	        System.out.println("ID : " + wallet.getId());
+	        System.out.println("Adresse : " + wallet.getAddress());
+	        
 	        System.out.println("Type : " + wallet.getType());
 	        System.out.println("Solde : " + wallet.getBalance() + " " + wallet.getType());
 	    }
@@ -149,6 +166,41 @@ public class MainMenu {
 	        } else {
 	            System.out.println("Aucune transaction trouvée avec cet ID.");
 	        }
+	    }
+	    
+	    private final Mempool mempool = new Mempool();
+
+	    private void viewMempoolPosition() throws SQLException {
+	        System.out.print("Entrez l'ID de la transaction : ");
+	        String id = scanner.nextLine();
+	        Transaction tx = transactionService.getTransactionById(id);
+	        if (tx != null) {
+	            int pos = mempool.getPosition(tx);
+	            System.out.println("Votre transaction est en position " + pos + " sur " + mempool.getSize());
+	            System.out.println("Temps estimé : " + (pos * 10) + " secondes");
+	        } else {
+	            System.out.println("Transaction introuvable.");
+	        }
+	    }
+
+	    private void compareFeeLevels() {
+	        System.out.print("Adresse source : ");
+	        String from = scanner.nextLine();
+	        System.out.print("Adresse destination : ");
+	        String to = scanner.nextLine();
+	        System.out.print("Montant : ");
+	        double amount = scanner.nextDouble();
+	        scanner.nextLine();
+
+	        for (FeePriority level : FeePriority.values()) {
+	            Transaction tx = new Transaction(from, to, amount, level, CryptoType.BITCOIN);
+	            mempool.addTransaction(tx);
+	            System.out.println(level + " -> Fee: " + tx.getFee() + " Position: " + mempool.getPosition(tx));
+	        }
+	    }
+
+	    private void displayMempool() {
+	        mempool.displayMempool(null);
 	    }
 	    
 	public static void main(String[] args) {

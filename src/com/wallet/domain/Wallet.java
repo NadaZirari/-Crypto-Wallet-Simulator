@@ -1,5 +1,5 @@
 package com.wallet.domain;
-
+import java.util.Random;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -18,7 +18,8 @@ public class Wallet {
 
 	    // Constructeur pour création normale
 	    public Wallet(CryptoType type) {
-	        this.id = UUID.randomUUID().toString();
+	    	Random random = new Random();
+	    	this.id = String.valueOf(random.nextInt(10) + 1); 
 	        this.type = type;
 	        this.address = generateAddress(type);
 	        this.balance = 0.0;
