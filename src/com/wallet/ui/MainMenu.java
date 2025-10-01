@@ -16,6 +16,7 @@ public class MainMenu {
 	    private final TransactionService transactionService;
 	    private final Scanner scanner;
 
+	    private Wallet selectedWallet;
 	    
 	    public MainMenu() {
 	        // Initialisation des repositories et services
@@ -33,13 +34,14 @@ public class MainMenu {
 	        while (true) {
 	            System.out.println("\n=== CRYPTO WALLET SIMULATOR ===");
 	            System.out.println("1. Créer un wallet");
-	            System.out.println("2. Créer une transaction");
-	            
-	            System.out.println("3. Voir un wallet par ID");
-	            System.out.println("4. Voir une transaction par ID");
-	            System.out.println("5. Voir ma position dans le mempool");
-	            System.out.println("6. Comparer les 3 niveaux de frais");
-	            System.out.println("7. Consulter l'état du mempool");
+	            System.out.println("2. Sélectionner un wallet existant"); // AJOUT
+	            System.out.println("3. Créer une transaction");
+
+	          /*  System.out.println(". Voir un wallet par ID");
+	            System.out.println("4. Voir une transaction par ID");*/
+	            System.out.println("4. Voir ma position dans le mempool");
+	            System.out.println("5. Comparer les 3 niveaux de frais");
+	            System.out.println("6. Consulter l'état du mempool");
 
 	            System.out.println("0. Quitter");
 	            System.out.print("Votre choix : ");
@@ -53,21 +55,23 @@ public class MainMenu {
 	                        createWallet();
 	                        break;
 	                    case 2:
-	                        createTransaction();
+	                    	selectWallet();
 	                        break;
 	                    case 3:
-	                        viewWallet();
+	                        createTransaction();
+
+	                       // viewWallet();
 	                        break;
+	                    //case 4:
+	                       // viewTransaction();
+	                       // break;
 	                    case 4:
-	                        viewTransaction();
-	                        break;
-	                    case 5:
 	                        viewMempoolPosition();
 	                        break;
-	                    case 6:
+	                    case 5:
 	                        compareFeeLevels();
 	                        break;
-	                    case 7:
+	                    case 6:
 	                        displayMempool();
 	                        break;
 	                    case 0:
@@ -99,10 +103,78 @@ public class MainMenu {
 	    }
 	    
 	    
-	    
-	    
-	    
+	 // Afficher tous les wallets
+	    private void listWallets() throws SQLException {
+	        System.out.println("\n=== LISTE DES WALLETS ===");
+	        var allWallets = walletService.getAllWallets();
+	        if (allWallets.isEmpty()) {
+	            System.out.println("Aucun wallet trouvé.");
+	        } else {
+	            int i = 1;
+	            for (Wallet w : allWallets) {
+	                System.out.printf("%d. ID: %s | Adresse: %s | Type: %s | Solde: %.6f\n",
+	                        i++, w.getId(), w.getAddress(), w.getType(), w.getBalance());
+	            }
+	        }
+	    }
+
+	    // Sélectionner un wallet existant
+	    private void selectWallet() throws SQLException {
+	        var allWallets = walletService.getAllWallets();
+	        if (allWallets.isEmpty()) {
+	            System.out.println("Aucun wallet disponible, créez-en un d'abord.");
+	            return;
+	        }
+
+	        listWallets();
+	        System.out.print("Choisissez un wallet (numéro) : ");
+	        int choice = scanner.nextInt();
+	        scanner.nextLine();
+
+	        if (choice < 1 || choice > allWallets.size()) {
+	            System.out.println("Choix invalide.");
+	        } else {
+	            selectedWallet = allWallets.get(choice - 1);
+	            System.out.println("Wallet sélectionné : " + selectedWallet.getId() + " (" + selectedWallet.getType() + ")");
+	        }
+	    }
+
+	    // Exemple : utiliser selectedWallet pour créer une transaction
 	    private void createTransaction() throws SQLException {
+	        if (selectedWallet == null) {
+	            System.out.println("⚠ Veuillez d'abord sélectionner un wallet !");
+	            return;
+	        }
+
+	        System.out.print("Adresse destination : ");
+	        String to = scanner.nextLine();
+	        System.out.print("Montant : ");
+	        double amount = scanner.nextDouble();
+	        scanner.nextLine();
+
+	        System.out.print("Fee level (ECONOMIQUE / STANDARD / RAPIDE) : ");
+	        String feeStr = scanner.nextLine().toUpperCase();
+	        FeePriority feeLevel = FeePriority.valueOf(feeStr);
+
+	        Transaction tx = transactionService.createTransaction(
+	                selectedWallet.getAddress(), // source = wallet sélectionné
+	                to,
+	                amount,
+	                feeLevel,
+	                selectedWallet.getType()
+	        );
+
+	        System.out.println(" Transaction créée !!");
+	        System.out.println("ID : " + tx.getId());
+	        System.out.println("De : " + tx.getFromAddress());
+	        System.out.println("Vers : " + tx.getToAddress());
+	        System.out.println("Montant : " + tx.getAmount());
+	        System.out.println("Frais : " + tx.getFee() + " " + tx.getCryptoType());
+	        System.out.println("Status : " + tx.getStatus());
+	    }
+	    
+	    
+	   /*private void createTransaction() throws SQLException {
 	        System.out.print("Adresse source : ");
 	        String from = scanner.nextLine();
 	        System.out.print("Adresse destination : ");
@@ -128,7 +200,7 @@ public class MainMenu {
 	        System.out.println("Montant : " + tx.getAmount());
 	        System.out.println("Frais : " + tx.getFee() + " " + tx.getCryptoType());
 	        System.out.println("Status : " + tx.getStatus());
-	    }
+	    }*/
 
 	    
 	    
