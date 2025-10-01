@@ -1,5 +1,10 @@
 package com.wallet.repository;
 import com.wallet.domain.Wallet;
+import java.util.List;
+import java.util.ArrayList;
+
+
+
 import com.wallet.utils.CryptoType;
 
 import com.wallet.utils.Config;
@@ -41,5 +46,24 @@ public class WalletRepositoryImpl implements WalletRepository{
 	         }
 	         return null;
 	     }
+	    @Override
+	    public List<Wallet> findAll() throws SQLException {
+	        Connection conn = Config.getConnection();
+	        Statement stmt = conn.createStatement();
+	        ResultSet rs = stmt.executeQuery("SELECT * FROM wallets");
+
+	        List<Wallet> wallets = new ArrayList<>();
+	        while (rs.next()) {
+	            CryptoType type = CryptoType.valueOf(rs.getString("type").toUpperCase());
+	            Wallet wallet = new Wallet(
+	                rs.getString("id"),
+	                rs.getString("address"),
+	                rs.getDouble("balance"),
+	                type
+	            );
+	            wallets.add(wallet);
+	        }
+	        return wallets;
+	    }
 
 }

@@ -1,5 +1,11 @@
 package com.wallet.service;
+import com.wallet.repository.WalletRepository; // doit pointer sur la bonne interface
 
+import java.util.List;
+
+
+import com.wallet.domain.Wallet;
+import java.sql.SQLException;
 
 
 import com.wallet.utils.CryptoType;
@@ -38,5 +44,12 @@ public class WalletServiceImpl implements WalletService {
 	    public Wallet getWalletById(String id) throws SQLException {
 	        return walletRepository.findById(id);
 	    }
+	    @Override
+	    public List<Wallet> getAllWallets() throws SQLException {
+	        return walletRepository.findAll();
+	    }
+	    
+
+	   
 	
 }

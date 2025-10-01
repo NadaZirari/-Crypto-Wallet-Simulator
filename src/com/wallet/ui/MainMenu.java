@@ -1,5 +1,6 @@
 package com.wallet.ui;
 
+import java.util.List;
 
 import com.wallet.utils.*;
 import com.wallet.domain.*;
@@ -106,12 +107,13 @@ public class MainMenu {
 	 // Afficher tous les wallets
 	    private void listWallets() throws SQLException {
 	        System.out.println("\n=== LISTE DES WALLETS ===");
-	        var allWallets = walletService.getAllWallets();
-	        if (allWallets.isEmpty()) {
+	        List<Wallet> wallets = walletService.getAllWallets();
+
+	        if (wallets.isEmpty()) {
 	            System.out.println("Aucun wallet trouvé.");
 	        } else {
 	            int i = 1;
-	            for (Wallet w : allWallets) {
+	            for (Wallet w : wallets) {
 	                System.out.printf("%d. ID: %s | Adresse: %s | Type: %s | Solde: %.6f\n",
 	                        i++, w.getId(), w.getAddress(), w.getType(), w.getBalance());
 	            }
@@ -120,8 +122,9 @@ public class MainMenu {
 
 	    // Sélectionner un wallet existant
 	    private void selectWallet() throws SQLException {
-	        var allWallets = walletService.getAllWallets();
-	        if (allWallets.isEmpty()) {
+	    	List<Wallet> wallets = walletService.getAllWallets();
+
+	        if (wallets.isEmpty()) {
 	            System.out.println("Aucun wallet disponible, créez-en un d'abord.");
 	            return;
 	        }
@@ -131,10 +134,10 @@ public class MainMenu {
 	        int choice = scanner.nextInt();
 	        scanner.nextLine();
 
-	        if (choice < 1 || choice > allWallets.size()) {
+	        if (choice < 1 || choice > wallets.size()) {
 	            System.out.println("Choix invalide.");
 	        } else {
-	            selectedWallet = allWallets.get(choice - 1);
+	            selectedWallet = wallets.get(choice - 1);
 	            System.out.println("Wallet sélectionné : " + selectedWallet.getId() + " (" + selectedWallet.getType() + ")");
 	        }
 	    }

@@ -3,7 +3,7 @@ package com.wallet.repository;
 import com.wallet.utils.FeePriority;
 import com.wallet.utils.CryptoType;
 import com.wallet.utils.TxStatus;
-
+import java.util.List;
 import com.wallet.domain.Transaction;
 import com.wallet.utils.Config;
 
@@ -54,6 +54,25 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 	        }
 	        return null;
 	    }
+	    @Override
+	    public List<Wallet> findAll() throws SQLException {
+	        Connection conn = Config.getConnection();
+	        Statement stmt = conn.createStatement();
+	        ResultSet rs = stmt.executeQuery("SELECT * FROM wallets");
+
+	        List<Wallet> wallets = new ArrayList<>();
+	        while (rs.next()) {
+	            Wallet w = new Wallet(
+	                rs.getString("id"),
+	                rs.getString("address"),
+	                rs.getDouble("balance"),
+	                CryptoType.valueOf(rs.getString("crypto_type").toUpperCase())
+	            );
+	            wallets.add(w);
+	        }
+	        return wallets;
+	    }
+
 	
 
 }
