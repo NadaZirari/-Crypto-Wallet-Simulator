@@ -73,16 +73,49 @@ public class Mempool {
     // Comparer les 3 niveaux de fees pour une transaction
     public void compareFeeLevels(Transaction tx) {
         System.out.println("=== COMPARAISON DES FEES ===");
-        System.out.println("Niveau | Fee | Position | Est. Time (min)");
+        System.out.println("Niveau | Fee | Position | Est. Time (sec)");
         System.out.println("----------------------------------------");
+
+        List<Transaction> baseList = new ArrayList<>(transactions); // copie du mempool
+
         for (FeePriority level : FeePriority.values()) {
-            tx.setFeePriority(level); // temporaire pour calcul
-            double fee = tx.getFee();
-            addTransaction(tx);
-            int position = getPosition(tx);
-            int estTime = position * 10;
-            System.out.printf("%-8s | %.6f | %-8d | %-15d\n", level.name(), fee, position, estTime);
-            transactions.remove(tx); // retirer pour ne pas perturber le mempool
+            // Créer une copie temporaire
+            Transaction tempTx = new Transaction(
+                tx.getFromAddress(),
+                tx.getToAddress(),
+                tx.getAmount(),
+                level,
+                tx.getCryptoType()
+            );
+            tempTx.setFeePriority(level);
+
+            // Liste temporaire pour test
+            List<Transaction> testList = new ArrayList<>(baseList);
+            testList.add(tempTx);
+
+            // Trier par fee décroissante
+            testList.sort((a, b) -> Double.compare(b.getFee(), a.getFee()));
+
+            // Calcul de la position
+            int position = 1;
+            for (Transaction t : testList) {
+                if (t.getId().equals(tempTx.getId())) break;
+                position++;
+            }
+
+            // Estimation temps réaliste
+            int estTime = 0;
+            for (int i = 0; i < position - 1; i++) {
+                FeePriority p = testList.get(i).getFeeLevel();
+                switch (p) {
+                    case RAPIDE: estTime += 1; break;
+                    case STANDARD: estTime += 2; break;
+                    case ECONOMIQUE: estTime += 5; break;
+                }
+            }
+
+            System.out.printf("%-8s | %.6f | %-8d | %-15d\n", level.name(), tempTx.getFee(), position, estTime);
         }
     }
+
 }

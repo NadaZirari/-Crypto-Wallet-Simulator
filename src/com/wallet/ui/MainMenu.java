@@ -295,20 +295,26 @@ public class MainMenu {
 
 
 	    private void compareFeeLevels() {
-	        System.out.print("Adresse source : ");
-	        String from = scanner.nextLine();
-	        System.out.print("Adresse destination : ");
-	        String to = scanner.nextLine();
-	        System.out.print("Montant : ");
-	        double amount = scanner.nextDouble();
-	        scanner.nextLine();
+	        System.out.print("Entrez l'ID de la transaction : ");
+	        String idStr = scanner.nextLine();
+	        UUID txId = UUID.fromString(idStr);
 
-	        for (FeePriority level : FeePriority.values()) {
-	            Transaction tx = new Transaction(from, to, amount, level, CryptoType.BITCOIN);
-	            mempool.addTransaction(tx);
-	            System.out.println(level + " -> Fee: " + tx.getFee() + " Position: " + mempool.getPosition(tx));
+	        Transaction tx = null;
+	        // Chercher la transaction dans le mempool
+	        for (Transaction t : mempool.getTransactions()) {
+	            if (t.getId().equals(txId)) {
+	                tx = t;
+	                break;
+	            }
+	        }
+
+	        if (tx != null) {
+	            mempool.compareFeeLevels(tx);  // utilise la transaction existante
+	        } else {
+	            System.out.println("Transaction introuvable dans le mempool.");
 	        }
 	    }
+
 
 	    private void displayMempool() {
 	        mempool.displayMempool(null);
