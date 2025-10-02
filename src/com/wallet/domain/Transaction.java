@@ -6,8 +6,8 @@ import java.util.UUID;
 
 public class Transaction {
 	
-	private String id;
-    private String fromAddress;
+	  private UUID id;
+	  private String fromAddress;
     private String toAddress;
     private double amount;
     private FeePriority feeLevel;
@@ -17,7 +17,7 @@ public class Transaction {
     private CryptoType cryptoType;
 
     public Transaction(String from, String to, double amount, FeePriority feeLevel, CryptoType type) {
-        this.id = UUID.randomUUID().toString();
+    	 this.id = UUID.randomUUID();
         this.fromAddress = from;
         this.toAddress = to;
         this.amount = amount;
@@ -27,7 +27,18 @@ public class Transaction {
         this.creationDate = LocalDateTime.now();
         this.fee = calculateFee();
     }
-
+    public Transaction(UUID id, String from, String to, double amount, FeePriority feeLevel,
+            double fee, TxStatus status, CryptoType type, LocalDateTime creationDate) {
+this.id = id;
+this.fromAddress = from;
+this.toAddress = to;
+this.amount = amount;
+this.feeLevel = feeLevel;
+this.fee = fee;
+this.status = status;
+this.cryptoType = type;
+this.creationDate = creationDate;
+}
 	
     private double calculateFee() {
         double result = 0;
@@ -55,7 +66,7 @@ public class Transaction {
         return result;
     }
 
-    public String getId() { return id; }
+    public UUID getId() { return id; }
     public String getFromAddress() { return fromAddress; }
     public String getToAddress() { return toAddress; }
     public double getAmount() { return amount; }

@@ -1,9 +1,12 @@
 package com.wallet.repository;
+import java.util.ArrayList;
 
 import com.wallet.utils.FeePriority;
 import com.wallet.utils.CryptoType;
 import com.wallet.utils.TxStatus;
 import java.util.List;
+import java.util.UUID;
+
 import com.wallet.domain.Transaction;
 import com.wallet.utils.Config;
 
@@ -20,7 +23,11 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 	        PreparedStatement ps = conn.prepareStatement(
 	            "INSERT INTO transactions(id, from_address, to_address, amount, fee_level, fee, status, crypto_type, creation_date) VALUES (?,?,?,?,?,?,?,?,?)"
 	        );
-	        ps.setString(1, tx.getId());
+	       
+	        
+	        UUID id = tx.getId() == null ? UUID.randomUUID() : tx.getId();
+	        ps.setObject(1, id, java.sql.Types.OTHER);
+	        
 	        ps.setString(2, tx.getFromAddress());
 	        ps.setString(3, tx.getToAddress());
 	        ps.setDouble(4, tx.getAmount());
@@ -55,24 +62,28 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 	        return null;
 	    }
 	    @Override
-	    public List<Wallet> findAll() throws SQLException {
+	    public List<Transaction> findAll() throws SQLException {
 	        Connection conn = Config.getConnection();
 	        Statement stmt = conn.createStatement();
-	        ResultSet rs = stmt.executeQuery("SELECT * FROM wallets");
+	        ResultSet rs = stmt.executeQuery("SELECT * FROM transactions");
 
-	        List<Wallet> wallets = new ArrayList<>();
+	        List<Transaction> transactions = new ArrayList<>();
 	        while (rs.next()) {
-	            Wallet w = new Wallet(
-	                rs.getString("id"),
-	                rs.getString("address"),
-	                rs.getDouble("balance"),
-	                CryptoType.valueOf(rs.getString("crypto_type").toUpperCase())
+	            Transaction tx = new Transaction(
+	                UUID.fromString(rs.getString("id")),
+	                rs.getString("from_address"),
+	                rs.getString("to_address"),
+	                rs.getDouble("amount"),
+	                FeePriority.valueOf(rs.getString("fee_level")),
+	                rs.getDouble("fee"),
+	                TxStatus.valueOf(rs.getString("status")),
+	                CryptoType.valueOf(rs.getString("crypto_type")),
+	                rs.getTimestamp("creation_date").toLocalDateTime()
 	            );
-	            wallets.add(w);
+	            transactions.add(tx);
 	        }
-	        return wallets;
+	        return transactions;
 	    }
-
 	
 
 }
