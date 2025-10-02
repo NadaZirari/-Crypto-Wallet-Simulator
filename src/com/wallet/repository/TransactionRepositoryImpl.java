@@ -43,7 +43,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 	    public Transaction findById(String id) throws SQLException {
 	        Connection conn = Config.getConnection();
 	        PreparedStatement ps = conn.prepareStatement(
-	            "SELECT * FROM transactions WHERE id = ?"
+	            "SELECT * FROM transactions WHERE id::text = ?"
 	        );
 	        ps.setString(1, id);
 	        ResultSet rs = ps.executeQuery();

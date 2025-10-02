@@ -9,6 +9,7 @@ import com.wallet.service.*;
 
 import java.sql.SQLException;
 import java.util.Scanner;
+import java.util.UUID;
 
 
 public class MainMenu {
@@ -166,6 +167,7 @@ public class MainMenu {
 	                feeLevel,
 	                selectedWallet.getType()
 	        );
+	        mempool.addTransaction(tx);
 
 	        System.out.println(" Transaction créée !!");
 	        System.out.println("ID : " + tx.getId());
@@ -207,11 +209,22 @@ public class MainMenu {
 
 	    
 	    
-	    private void viewWallet() throws SQLException {
-	        System.out.print("Entrez l'ID du wallet : ");
-	        String id = scanner.nextLine();
+	  
+	        
+	        private void viewWallet() throws SQLException {
+	            System.out.print("Entrez l'ID du wallet : ");
+	            String idInput = scanner.nextLine();
 
-	        Wallet wallet = walletService.getWalletById(id);
+	            UUID walletId;
+	            try {
+	                walletId = UUID.fromString(idInput); // conversion sécurisée
+	            } catch (IllegalArgumentException e) {
+	                System.out.println("ID invalide, veuillez entrer un UUID valide !");
+	                return;
+	            }
+	        
+
+	            Wallet wallet = walletService.getWalletById(walletId);
 	        if (wallet != null) {
 	            System.out.println("=== WALLET ===");
 	            System.out.println("ID : " + wallet.getId());
@@ -245,7 +258,7 @@ public class MainMenu {
 	    
 	    private final Mempool mempool = new Mempool();
 
-	    private void viewMempoolPosition() throws SQLException {
+	   /* private void viewMempoolPosition() throws SQLException {
 	        System.out.print("Entrez l'ID de la transaction : ");
 	        String id = scanner.nextLine();
 	        Transaction tx = transactionService.getTransactionById(id);
@@ -256,7 +269,30 @@ public class MainMenu {
 	        } else {
 	            System.out.println("Transaction introuvable.");
 	        }
+	    }*/
+	    private void viewMempoolPosition() throws SQLException {
+	        System.out.print("Entrez l'ID de la transaction : ");
+	        String idStr = scanner.nextLine();
+	        UUID txId = UUID.fromString(idStr);
+
+	        Transaction tx = null;
+	        // Chercher la transaction dans le mempool
+	        for (Transaction t : mempool.getTransactions()) {
+	            if (t.getId().equals(txId)) {
+	                tx = t;
+	                break;
+	            }
+	        }
+
+	        if (tx != null) {
+	            int pos = mempool.getPosition(tx);
+	            System.out.println("Votre transaction est en position " + pos + " sur " + mempool.getSize());
+	            System.out.println("Temps estimé : " + (pos * 10) + " secondes");
+	        } else {
+	            System.out.println("Transaction introuvable dans le mempool.");
+	        }
 	    }
+
 
 	    private void compareFeeLevels() {
 	        System.out.print("Adresse source : ");

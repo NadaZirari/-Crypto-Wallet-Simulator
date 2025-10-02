@@ -34,22 +34,24 @@ public class WalletServiceImpl implements WalletService {
 	                ? "1" + UUID.randomUUID().toString().replace("-", "").substring(0, 25)
 	                : "0x" + UUID.randomUUID().toString().replace("-", "").substring(0, 32);
 
-	        Wallet wallet = new Wallet(UUID.randomUUID().toString(), address, 0.0, cryptoType);
+	        Wallet wallet = new Wallet(UUID.randomUUID(), address, 0.0, cryptoType);
 
 	        walletRepository.save(wallet);
 	        return wallet;
 	    }
 
-	    @Override
-	    public Wallet getWalletById(String id) throws SQLException {
-	        return walletRepository.findById(id);
-	    }
+	   
 	    @Override
 	    public List<Wallet> getAllWallets() throws SQLException {
 	        return walletRepository.findAll();
 	    }
 	    
+	    @Override
+	    public Wallet getWalletById(UUID id) throws SQLException {
+	        return walletRepository.findById(id);
+	    }
 
-	   
+
+	  
 	
 }

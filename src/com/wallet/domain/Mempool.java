@@ -30,10 +30,13 @@ public class Mempool {
     // Obtenir la position d'une transaction
     public int getPosition(Transaction tx) {
         sortByFee();
-        int index = transactions.indexOf(tx);
-        return index >= 0 ? index + 1 : -1;
+        for (int i = 0; i < transactions.size(); i++) {
+            if (transactions.get(i).getId().equals(tx.getId())) {
+                return i + 1; // position 1-based
+            }
+        }
+        return -1; // non trouvé
     }
-
     public int getSize() {
         return transactions.size();
     }

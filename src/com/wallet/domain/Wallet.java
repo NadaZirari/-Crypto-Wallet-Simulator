@@ -10,7 +10,7 @@ import com.wallet.utils.CryptoType;
 public class Wallet {
 	
 	
-	 private String id; 
+	private UUID id;
 	    private CryptoType type;
 	    private String address;
 	    private double balance;
@@ -18,8 +18,7 @@ public class Wallet {
 
 	    // Constructeur pour création normale
 	    public Wallet(CryptoType type) {
-	    	Random random = new Random();
-	    	this.id = String.valueOf(random.nextInt(10) + 1); 
+	    	this.id = UUID.randomUUID();
 	        this.type = type;
 	        this.address = generateAddress(type);
 	        this.balance = 0.0;
@@ -27,7 +26,7 @@ public class Wallet {
 	    }
 
 	    // Constructeur pour récupération depuis la base de données
-	    public Wallet(String id, String address, double balance, CryptoType type) {
+	    public Wallet(UUID id, String address, double balance, CryptoType type) {
 	        this.id = id;
 	        this.address = address;
 	        this.balance = balance;
@@ -49,8 +48,7 @@ public class Wallet {
 
 	    public void addTransaction(Transaction tx) { transactions.add(tx); }
 
-	    public String getId() { return id; }
-	    
+	    public UUID getId() { return id; }	    
 	    public CryptoType getType() { return type; }
 	    
 	    public String getAddress() { return address; }
